@@ -24,7 +24,7 @@ docs/
   clause-08-operation/    (planned) records of risk assessments and treatment results (8.1 to 8.3)
   clause-09-evaluation/   (planned) internal audit, management review
   clause-10-improvement/  (planned) nonconformities, corrective actions
-  policies/               (planned) topic-specific policies
+  policies/               topic-specific policies (3 of 9 written)
 lab/                      lab files; four tools tested by GitHub Actions
 evidence/                 one register per action and dated test reports from real runs
 ```
@@ -47,7 +47,7 @@ The lab machine has 1.6 GiB of RAM, which is not enough to run the four tools be
 - [x] Statement of Applicability (93 controls)
 - [x] Clause 6.1.3: risk treatment plan and residual risk acceptance
 - [x] Clause 5: leadership, information security policy, roles
-- [ ] Topic-specific policies
+- [ ] Topic-specific policies (POL-01 access control, POL-02 secure development, POL-03 classification written; 6 to do)
 - [x] Lab control tests on GitHub Actions (Keycloak, Gitea, Nextcloud, Wazuh)
 - [ ] Clause 9: internal audit report and management review minutes
 - [ ] Clause 10: nonconformity and corrective action log
