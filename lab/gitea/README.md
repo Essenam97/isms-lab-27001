@@ -1,6 +1,10 @@
 # Gitea: source code protection for Lagune Payroll (action A10)
 
-Status: tests automated, not yet run. The tests run on a GitHub-hosted runner through the workflow [gitea-controls.yml](../../.github/workflows/gitea-controls.yml). A test counts as run only when its report, with date and run link, is stored in `evidence/A10/`.
+Status: tests automated; run 1 on 2026-10-16 passed, see [evidence](../../evidence/A10/2026-10-16-gitea-run-1.md). The tests run on a GitHub-hosted runner through the workflow [gitea-controls.yml](../../.github/workflows/gitea-controls.yml). A test counts as run only when its report, with date and run link, is stored in `evidence/A10/`.
+
+| Run | Date (UTC) | Result | Used as evidence |
+|---|---|---|---|
+| 1 | 2026-10-16 04:31:52 | 6 PASS | Yes |
 
 ## What this covers
 
