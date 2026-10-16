@@ -1,10 +1,6 @@
 # Gitea: source code protection for Lagune Payroll (action A10)
 
-Status: tests automated; run 1 on 2026-10-16 passed, see [evidence](../../evidence/A10/2026-10-16-gitea-run-1.md). The tests run on a GitHub-hosted runner through the workflow [gitea-controls.yml](../../.github/workflows/gitea-controls.yml). A test counts as run only when its report, with date and run link, is stored in `evidence/A10/`.
-
-| Run | Date (UTC) | Result | Used as evidence |
-|---|---|---|---|
-| 1 | 2026-10-16 04:31:52 | 6 PASS | Yes |
+Status: tests automated; run 1 on 2026-10-16 passed, see [evidence](../../evidence/A10/2026-10-16-gitea-run-1.md). The tests run on a GitHub-hosted runner through the workflow [gitea-controls.yml](../../.github/workflows/gitea-controls.yml). Runs are listed in the [evidence register](../../evidence/A10/README.md). A test counts as run only when its report, with date and run link, is stored in `evidence/A10/`.
 
 ## What this covers
 
@@ -36,7 +32,7 @@ Status: tests automated; run 1 on 2026-10-16 passed, see [evidence](../../eviden
 | GT-01 | 8.4 | `support1` asks for the repository | HTTP 404: the repository is invisible |
 | GT-02 | 8.4 | `dev1` asks for the repository | HTTP 200 (positive control: shows GT-01 is not a broken setup) |
 | GT-03 | 8.28, 8.32 | `dev1` commits on `main` and runs `git push` | Push refused by the protection rule |
-| GT-04 | 8.25, 8.28 | `dev1` opens a pull request and tries to merge it at once | Merge refused; pull request still not merged |
+| GT-04 | 8.25, 8.28 | `dev1` opens a pull request and tries to merge it at once | Merge refused with HTTP 405 (required since run 3); pull request still not merged |
 | GT-05 | 5.3 | `dev1` tries to approve their own pull request | HTTP 422: refused |
 | GT-06 | 8.25, 5.3 | `dev2` approves, then `dev1` merges | Approval HTTP 200, merge HTTP 200, pull request merged (positive control) |
 

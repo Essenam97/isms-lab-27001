@@ -98,8 +98,9 @@ PR=$(jq -r .number /tmp/body)
 # ---- GT-04 Merge without approval is blocked (8.25, 8.28)
 api dev1 "$PW" POST "/repos/$ORG/$REPO/pulls/$PR/merge" '{"Do":"merge"}'; C=$CODE
 api dev1 "$PW" GET "/repos/$ORG/$REPO/pulls/$PR"; MERGED=$(jq -r .merged /tmp/body)
-[ "$C" != "200" ] && [ "$MERGED" = "false" ]
-result GT-04 "8.25, 8.28" "Merge refused and pull request still not merged" "merge HTTP $C; merged=$MERGED" $?
+# HTTP 405 observed in run 1 (Gitea 1.23.8); required exactly since run 3.
+[ "$C" = "405" ] && [ "$MERGED" = "false" ]
+result GT-04 "8.25, 8.28" "Merge refused (HTTP 405) and pull request still not merged" "merge HTTP $C; merged=$MERGED" $?
 
 # ---- GT-05 Author cannot approve own pull request (5.3)
 api dev1 "$PW" POST "/repos/$ORG/$REPO/pulls/$PR/reviews" '{"event":"APPROVED","body":"self approval"}'; C=$CODE

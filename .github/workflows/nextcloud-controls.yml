@@ -1,0 +1,69 @@
+# Runs the Nextcloud control tests NC-01 to NC-05 (actions A07, A13) on a
+# GitHub-hosted runner. The runner is destroyed after each run.
+name: Nextcloud control tests (A07, A13)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "lab/nextcloud/**"
+      - ".github/workflows/nextcloud-controls.yml"
+  schedule:
+    - cron: "0 7 * * 1"   # every Monday at 07:00 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: lab/nextcloud
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v5
+
+      - name: Create a random admin password for this run only
+        run: |
+          PASS="$(openssl rand -base64 24 | tr -d '/+=')Aa1"
+          echo "::add-mask::$PASS"
+          printf 'NC_ADMIN_USER=lab-admin\nNC_ADMIN_PASSWORD=%s\n' "$PASS" > .env
+          echo "NC_ADMIN_PASSWORD=$PASS" >> "$GITHUB_ENV"
+
+      - name: Start Nextcloud
+        run: docker compose up -d
+
+      - name: Wait until Nextcloud is installed
+        run: |
+          for i in $(seq 1 90); do
+            if curl -s http://localhost:8081/status.php | grep -q '"installed":true'; then
+              echo "Nextcloud is installed after $((i*5)) seconds"; exit 0
+            fi
+            sleep 5
+          done
+          echo "Nextcloud was not installed within 7.5 minutes"; exit 1
+
+      - name: Run tests NC-01 to NC-05
+        env:
+          NC_URL: http://localhost:8081
+          NC_ADMIN_USER: lab-admin
+        run: bash tests/run-tests.sh
+
+      - name: Show Nextcloud logs if something failed
+        if: failure()
+        run: docker compose logs --tail=200
+
+      - name: Keep the report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: nextcloud-test-report
+          path: lab/nextcloud/test-report.md
+          if-no-files-found: warn
+
+      - name: Stop Nextcloud
+        if: always()
+        run: docker compose down

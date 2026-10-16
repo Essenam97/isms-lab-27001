@@ -26,7 +26,7 @@ docs/
   clause-10-improvement/  (planned) nonconformities, corrective actions
   policies/               (planned) topic-specific policies
 lab/                      lab files; Keycloak and Gitea tested by GitHub Actions
-evidence/                 dated test reports from real runs (Keycloak, Gitea)
+evidence/                 one register per action and dated test reports from real runs
 ```
 
 ## Lab: tested on GitHub Actions
@@ -36,7 +36,7 @@ The lab machine has 1.6 GiB of RAM, which is not enough to run the four tools be
 | Component | Role in the fictional company | Related Annex A controls | Status |
 |---|---|---|---|
 | Keycloak | Single sign-on and MFA for all internal tools | 5.16, 5.17, 5.18, 8.5, 8.15 | Tested in the lab on 2026-10-16 by GitHub Actions: [lab/keycloak](lab/keycloak/README.md), [evidence](evidence/A04/2026-10-16-keycloak-run-2.md) |
-| Nextcloud | Internal file sharing | 5.12, 5.14, 8.24 | Planned |
+| Nextcloud | Internal file sharing | 5.14, 5.17, 8.3, 8.24 | Tests automated, not yet run: [lab/nextcloud](lab/nextcloud/README.md) |
 | Gitea | Source code hosting | 5.3, 8.4, 8.25, 8.28, 8.32 | Tested in the lab on 2026-10-16 by GitHub Actions: [lab/gitea](lab/gitea/README.md), [evidence](evidence/A10/2026-10-16-gitea-run-1.md) |
 | Wazuh | Log collection and security monitoring | 8.15, 8.16 | Planned |
 

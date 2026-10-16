@@ -1,11 +1,6 @@
 # Keycloak: identity and access for Lagune Payroll (action A04)
 
-Status: tests automated; run 2 on 2026-10-16 passed, see [evidence](../../evidence/A04/2026-10-16-keycloak-run-2.md). The lab machine (1.6 GiB of RAM) cannot host the stack, so the tests run on a GitHub-hosted runner through the workflow [keycloak-controls.yml](../../.github/workflows/keycloak-controls.yml). A test counts as run only when a report from a workflow run, with its date and run link, is stored in `evidence/A04/`.
-
-| Run | Date (UTC) | Result | Used as evidence |
-|---|---|---|---|
-| 1 | 2026-10-16 04:09:51 | 5 PASS, but KC-02 and KC-04 verdicts invalid (script defect) | No |
-| 2 | 2026-10-16 04:18:23 | 5 PASS | Yes |
+Status: tests automated; run 2 on 2026-10-16 passed, see [evidence](../../evidence/A04/2026-10-16-keycloak-run-2.md). The lab machine (1.6 GiB of RAM) cannot host the stack, so the tests run on a GitHub-hosted runner through the workflow [keycloak-controls.yml](../../.github/workflows/keycloak-controls.yml). Runs are listed in the [evidence register](../../evidence/A04/README.md). A test counts as run only when a report from a workflow run, with its date and run link, is stored in `evidence/A04/`.
 
 ## What this covers
 
