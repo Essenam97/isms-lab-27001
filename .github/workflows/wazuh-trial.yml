@@ -1,0 +1,36 @@
+# Feasibility trial: can the Wazuh single-node stack run on a GitHub-hosted
+# runner? Not a control test. Started by hand or when the trial files change.
+name: Wazuh feasibility trial (A11)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "lab/wazuh/**"
+      - ".github/workflows/wazuh-trial.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  trial:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: lab/wazuh
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v5
+
+      - name: Start Wazuh and measure
+        run: bash trial.sh
+
+      - name: Keep the report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: wazuh-trial-report
+          path: lab/wazuh/trial-report.md
+          if-no-files-found: warn

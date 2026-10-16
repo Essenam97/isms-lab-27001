@@ -38,7 +38,7 @@ The lab machine has 1.6 GiB of RAM, which is not enough to run the four tools be
 | Keycloak | Single sign-on and MFA for all internal tools | 5.16, 5.17, 5.18, 8.5, 8.15 | Tested in the lab on 2026-10-16 by GitHub Actions: [lab/keycloak](lab/keycloak/README.md), [evidence](evidence/A04/2026-10-16-keycloak-run-2.md) |
 | Nextcloud | Internal file sharing | 5.14, 5.17, 8.3, 8.24 | Tested in the lab on 2026-10-16 by GitHub Actions: [lab/nextcloud](lab/nextcloud/README.md), [evidence](evidence/A13/2026-10-16-nextcloud-run-1.md) |
 | Gitea | Source code hosting | 5.3, 8.4, 8.25, 8.28, 8.32 | Tested in the lab on 2026-10-16 by GitHub Actions: [lab/gitea](lab/gitea/README.md), [evidence](evidence/A10/2026-10-16-gitea-run-1.md) |
-| Wazuh | Log collection and security monitoring | 8.15, 8.16 | Planned |
+| Wazuh | Log collection and security monitoring | 8.15, 8.16 | Feasibility trial: [lab/wazuh](lab/wazuh/README.md) |
 
 ## Roadmap
 
