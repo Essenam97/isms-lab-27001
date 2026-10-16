@@ -5,7 +5,7 @@
 | Owner | Head of Infrastructure |
 | Approver | CEO |
 | Classification | Internal |
-| Version | 1.0 |
+| Version | 1.1 |
 | Applies to | All staff, interns and contractors; all systems in the ISMS scope |
 | SoA controls | 5.15, 5.16, 5.17, 5.18, 6.5, 8.2, 8.3, 8.5, 8.15 |
 | Risks | R02, R03, R07, R12 |
@@ -62,7 +62,7 @@ Passwords and MFA codes must never be shared, written down in plain text or sent
 
 ## 8. Review and monitoring
 
-1. Login events and administrator events in Keycloak are kept for 90 days.
+1. Login events and administrator events in Keycloak are kept for 400 days, longer than a quarter plus the time needed to carry out the quarterly review.
 2. Failed logins raise alerts in the monitoring tool; 5 failed logins within 2 minutes raise a high-level alert.
 3. Every quarter, each risk owner reviews the access rights in their area. The review checks at least: people who left or changed team, accounts with administrator rights, and accounts on which multi-factor authentication is not active or was removed (using the Keycloak administrator events). The result is recorded and kept for one year.
 
@@ -78,5 +78,6 @@ At least once a year, and after any major change to the identity system.
 |---|---|---|---|
 | 0.1 | 2026-10 | ISMS manager | First draft, written ahead of the dates in the risk treatment plan |
 | 1.0 | 2026-10-16 | CEO | Approved at the ISMS kick-off meeting |
+| 1.1 | 2026-10-16 | CEO | Section 8.1: retention of Keycloak events raised from 90 to 400 days (NC-01 of audit IA-2026-01); approved by signed message |
 
-Status: approved, version 1.0, at the ISMS kick-off meeting on 2026-10-16. See the [approval register](../clause-07-support/7.5-documented-information.md).
+Status: approved, version 1.1, by signed message of the CEO on 2026-10-16. See the [approval register](../clause-07-support/7.5-documented-information.md).

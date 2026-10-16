@@ -19,7 +19,7 @@
   "ssoSessionIdleTimeout": 1800,
   "ssoSessionMaxLifespan": 36000,
   "eventsEnabled": true,
-  "eventsExpiration": 7776000,
+  "eventsExpiration": 34560000,
   "adminEventsEnabled": true,
   "adminEventsDetailsEnabled": true,
   "requiredActions": [
@@ -34,13 +34,27 @@
     }
   ],
   "groups": [
-    { "name": "management" },
-    { "name": "development" },
-    { "name": "infrastructure" },
-    { "name": "support" },
-    { "name": "sales" },
-    { "name": "finance" },
-    { "name": "hr" }
+    {
+      "name": "management"
+    },
+    {
+      "name": "development"
+    },
+    {
+      "name": "infrastructure"
+    },
+    {
+      "name": "support"
+    },
+    {
+      "name": "sales"
+    },
+    {
+      "name": "finance"
+    },
+    {
+      "name": "hr"
+    }
   ],
   "clients": [
     {
@@ -51,8 +65,12 @@
       "publicClient": false,
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
-      "redirectUris": ["http://localhost:3000/*"],
-      "webOrigins": ["http://localhost:3000"]
+      "redirectUris": [
+        "http://localhost:3000/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3000"
+      ]
     },
     {
       "clientId": "nextcloud",
@@ -62,8 +80,15 @@
       "publicClient": false,
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
-      "redirectUris": ["http://localhost:8081/*"],
-      "webOrigins": ["http://localhost:8081"]
+      "redirectUris": [
+        "http://localhost:8081/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8081"
+      ]
     }
-  ]
+  ],
+  "attributes": {
+    "adminEventsExpiration": "34560000"
+  }
 }

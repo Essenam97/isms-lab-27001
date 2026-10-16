@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Control tests KC-01 to KC-05 for the lagune realm (action A04).
+# Control tests KC-01 to KC-08 for the lagune realm (action A04).
+# Since run 4: KC-04 uses a temporary password-only client as baseline,
+# KC-06 to KC-08 added for OBS-01 and NC-01 of audit IA-2026-01.
 # Needs: curl, jq, and the variables KC_URL, KC_ADMIN_USER, KC_ADMIN_PASSWORD.
 set -u
 
@@ -49,9 +51,9 @@ api () { # method path [json]; prints body, sets CODE
   cat /tmp/body
 }
 
-user_login () { # username password; writes body to /tmp/login, sets CODE
+user_login () { # username password [client]; writes body to /tmp/login, sets CODE
   # Not called inside $(...): a subshell would lose CODE (bug found in run 1).
-  CODE=$(curl -s -o /tmp/login -w '%{http_code}' -d grant_type=password -d client_id=admin-cli \
+  CODE=$(curl -s -o /tmp/login -w '%{http_code}' -d grant_type=password -d "client_id=${3:-admin-cli}" \
     --data-urlencode "username=$1" --data-urlencode "password=$2" \
     "$KC_URL/realms/$REALM/protocol/openid-connect/token")
 }
@@ -86,8 +88,8 @@ set_password "$U1" "$GOOD_PASS"
 RA=$(api GET "/users/$U1" | jq -c '.requiredActions')
 user_login kc-test-1 "$GOOD_PASS"; C2=$CODE
 DESC=$(jq -r '.error_description // empty' /tmp/login)
-echo "$RA" | grep -q CONFIGURE_TOTP && [ "$C2" = "400" ]
-result KC-02 8.5 "New user has CONFIGURE_TOTP; token request refused (HTTP 400) before MFA is set up" "requiredActions=$RA; login HTTP $C2 ${DESC}" $?
+echo "$RA" | grep -q CONFIGURE_TOTP && { [ "$C2" = "400" ] || [ "$C2" = "401" ]; }
+result KC-02 8.5 "New user has CONFIGURE_TOTP; token request refused (HTTP 400 or 401) before MFA is set up" "requiredActions=$RA; login HTTP $C2 ${DESC}" $?
 
 # KC-03 Brute force protection and login error events (8.5, 8.15)
 U2=$(create_user kc-test-2)
@@ -98,15 +100,24 @@ NERR=$(api GET "/events?type=LOGIN_ERROR&user=$U2&max=50" | jq 'length')
 echo "$BF" | jq -e '.disabled == true' > /dev/null && [ "${NERR:-0}" -ge 5 ]
 result KC-03 "8.5, 8.15" "User temporarily disabled after 5 failures; failures logged" "$BF; LOGIN_ERROR events=$NERR" $?
 
+# Baseline client: a temporary client that uses the built-in password-only
+# "direct grant" flow. It exists only during the tests and is deleted at the
+# end; KC-07 checks that no client with a flow override is left.
+DG_ID=$(api GET "/authentication/flows" | jq -r '.[] | select(.alias=="direct grant") | .id')
+api POST /clients "{\"clientId\":\"kc-test-baseline\",\"publicClient\":true,\"standardFlowEnabled\":false,\"directAccessGrantsEnabled\":true,\"authenticationFlowBindingOverrides\":{\"direct_grant\":\"$DG_ID\"}}" > /dev/null
+BASE_CODE=$CODE
+BASE_ID=$(api GET "/clients?clientId=kc-test-baseline" | jq -r '.[0].id')
+[ "$BASE_CODE" = "201" ] && [ -n "$DG_ID" ] || { echo "| setup | n/a | Temporary baseline client | HTTP $BASE_CODE, flow id ${DG_ID:-none} | FAIL |" >> "$REPORT"; exit 1; }
+
 # KC-04 Disabled account cannot log in (5.18, 6.5)
 U3=$(create_user kc-test-3)
 set_password "$U3" "$GOOD_PASS"
 update_user "$U3" '.requiredActions = []'
-user_login kc-test-3 "$GOOD_PASS" > /dev/null; BEFORE=$CODE
+user_login kc-test-3 "$GOOD_PASS" kc-test-baseline; BEFORE=$CODE
 update_user "$U3" '.enabled = false'
-user_login kc-test-3 "$GOOD_PASS"; AFTER=$CODE
+user_login kc-test-3 "$GOOD_PASS" kc-test-baseline; AFTER=$CODE
 [ "$BEFORE" = "200" ] && [ "$AFTER" = "400" ]
-result KC-04 "5.18, 6.5" "Login HTTP 200 before, HTTP 400 after disabling" "before HTTP $BEFORE; after HTTP $AFTER $(jq -r '.error_description // empty' /tmp/login)" $?
+result KC-04 "5.18, 6.5" "Login HTTP 200 before, HTTP 400 after disabling (baseline client)" "before HTTP $BEFORE; after HTTP $AFTER $(jq -r '.error_description // empty' /tmp/login)" $?
 
 # KC-05 Admin events for group changes (8.15)
 GID=$(api GET "/groups?search=infrastructure" | jq -r '.[] | select(.name=="infrastructure") | .id')
@@ -114,6 +125,35 @@ api PUT "/users/$U2/groups/$GID" > /dev/null; C5=$CODE
 NADM=$(api GET "/admin-events?resourceTypes=GROUP_MEMBERSHIP&max=50" | jq --arg u "$U2" '[.[] | select(.resourcePath | contains($u))] | length')
 [ "$C5" = "204" ] && [ "${NADM:-0}" -ge 1 ]
 result KC-05 8.15 "Group change recorded as admin event" "add to group HTTP $C5; matching admin events=$NADM" $?
+
+# KC-06 MFA cannot be bypassed by removing the required action (8.5, OBS-01)
+U4=$(create_user kc-test-4)
+set_password "$U4" "$GOOD_PASS"
+update_user "$U4" '.requiredActions = []'
+user_login kc-test-4 "$GOOD_PASS" kc-test-baseline; C6B=$CODE
+user_login kc-test-4 "$GOOD_PASS"; C6=$CODE; D6=$(jq -r '.error_description // empty' /tmp/login)
+[ "$C6B" = "200" ] && { [ "$C6" = "400" ] || [ "$C6" = "401" ]; }
+result KC-06 "8.5" "Required action removed: password alone works only on the baseline client (HTTP 200) and is refused by the realm flow" "baseline HTTP $C6B; realm flow HTTP $C6 $D6" $?
+
+# Remove the baseline client before checking the configuration
+api DELETE "/clients/$BASE_ID" > /dev/null; CDEL=$CODE
+
+# KC-07 Realm flows require the one-time code; no client overrides them (8.5)
+REALM_REP=$(api GET "")
+BF=$(echo "$REALM_REP" | jq -r .browserFlow); DF=$(echo "$REALM_REP" | jq -r .directGrantFlow)
+BOTP=$(api GET "/authentication/flows/$(jq -rn --arg s "$BF" '$s|@uri')/executions" | jq -r '[.[] | select(.providerId=="auth-otp-form")][0].requirement // "none"')
+BCOND=$(api GET "/authentication/flows/$(jq -rn --arg s "$BF" '$s|@uri')/executions" | jq '[.[] | select(.authenticationFlow==true and .requirement=="CONDITIONAL" and (.displayName|test("OTP")))] | length')
+DOTP=$(api GET "/authentication/flows/$(jq -rn --arg s "$DF" '$s|@uri')/executions" | jq -r '[.[] | select(.providerId=="direct-grant-validate-otp")][0].requirement // "none"')
+DCOND=$(api GET "/authentication/flows/$(jq -rn --arg s "$DF" '$s|@uri')/executions" | jq '[.[] | select(.authenticationFlow==true and .requirement=="CONDITIONAL" and (.displayName|test("OTP")))] | length')
+NOVR=$(api GET "/clients" | jq '[.[] | select((.authenticationFlowBindingOverrides // {}) | length > 0)] | length')
+[ "$BF" = "lagune browser" ] && [ "$DF" = "lagune direct grant" ] && [ "$BOTP" = "REQUIRED" ] && [ "$DOTP" = "REQUIRED" ] && [ "$BCOND" = "0" ] && [ "$DCOND" = "0" ] && [ "$NOVR" = "0" ] && [ "$CDEL" = "204" ]
+result KC-07 "8.5" "Both realm flows have the OTP step REQUIRED and no conditional OTP subflow; no client overrides a flow" "browser=$BF (OTP $BOTP, conditional OTP subflows $BCOND); direct grant=$DF (OTP $DOTP, conditional OTP subflows $DCOND); clients with overrides=$NOVR; baseline client delete HTTP $CDEL" $?
+
+# KC-08 Retention of login and administrator events (8.15, NC-01)
+EE=$(echo "$REALM_REP" | jq -r '.eventsExpiration // "none"')
+AE=$(echo "$REALM_REP" | jq -r '.attributes.adminEventsExpiration // "none"')
+[ "$EE" = "34560000" ] && [ "$AE" = "34560000" ]
+result KC-08 "8.15" "Login and administrator events kept 400 days (34560000 s)" "eventsExpiration=$EE; attributes.adminEventsExpiration=$AE" $?
 
 echo >> "$REPORT"
 if [ "$FAILED" -eq 0 ]; then echo "All tests passed." >> "$REPORT"; else echo "At least one test failed. A failed test is a finding to record, not a file to fix silently." >> "$REPORT"; fi

@@ -1,4 +1,4 @@
-# Runs the Keycloak control tests KC-01 to KC-05 (action A04) on a
+# Runs the Keycloak control tests KC-01 to KC-08 (action A04) on a
 # GitHub-hosted runner. The runner is destroyed after each run.
 name: Keycloak control tests (A04)
 
@@ -46,7 +46,13 @@ jobs:
           done
           echo "Keycloak did not start within 5 minutes"; exit 1
 
-      - name: Run tests KC-01 to KC-05
+      - name: Make the one-time code required at every login
+        env:
+          KC_URL: http://localhost:8080
+          KC_ADMIN_USER: lab-admin
+        run: bash apply-mfa-flows.sh
+
+      - name: Run tests KC-01 to KC-08
         env:
           KC_URL: http://localhost:8080
           KC_ADMIN_USER: lab-admin
