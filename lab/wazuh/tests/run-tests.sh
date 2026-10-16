@@ -43,6 +43,8 @@ logtest () { # format event; sets RULE, LEVEL, SESSION (keeps the session if SES
     -H 'Content-Type: application/json' -d "$body" > /tmp/lt.json
   SESSION=$(jq -r '.data.token // empty' /tmp/lt.json)
   RULE=$(jq -r '.data.output.rule.id // "none"' /tmp/lt.json)
+  APIERR=$(jq -r '.error // "missing"' /tmp/lt.json)
+  DECODER=$(jq -r '.data.output.decoder.name // "none"' /tmp/lt.json)
   LEVEL=$(jq -r '.data.output.rule.level // "none"' /tmp/lt.json)
 }
 
@@ -96,9 +98,12 @@ done < /tmp/kc-errors.jsonl
 result WZ-04 "8.16" "Events 1 to 4: rule 100100; event 5: rule 100101, level 10" "event 4: rule $R4; event 5: rule $RULE, level $LEVEL" $?
 
 # ---- WZ-05 Negative control: a real Keycloak line that is not an event (8.16)
+# Since run 2: the line must be non-empty, the API call must succeed and the
+# JSON decoder must have read the line. In run 1 "rule none" could also have
+# come from a failed call.
 SESSION=""; logtest json "$OTHER"
-[ "$RULE" != "100100" ] && [ "$RULE" != "100101" ]
-result WZ-05 8.16 "Ordinary Keycloak log line does not trigger a Lagune rule" "rule $RULE" $?
+[ -n "$OTHER" ] && [ "$APIERR" = "0" ] && [ "$DECODER" = "json" ] && [ "$RULE" != "100100" ] && [ "$RULE" != "100101" ]
+result WZ-05 8.16 "Ordinary Keycloak line is decoded as JSON but triggers no Lagune rule" "line length ${#OTHER}; API error $APIERR; decoder $DECODER; rule $RULE; logger $(echo "$OTHER" | jq -r '.loggerName // "none"' 2>/dev/null)" $?
 
 cat /tmp/sample.md >> "$REPORT"
 if [ "$FAILED" -eq 0 ]; then echo "All tests passed." >> "$REPORT"; else echo "At least one test failed. A failed test is a finding to record, not a file to fix silently." >> "$REPORT"; fi

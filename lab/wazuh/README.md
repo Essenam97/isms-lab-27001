@@ -1,6 +1,6 @@
 # Wazuh: log collection and monitoring for Lagune Payroll (action A11)
 
-Status: control tests automated, not yet run. Runs are listed in the [evidence register](../../evidence/A11/README.md).
+Status: control tests automated; run 1 on 2026-10-16 passed, see [evidence](../../evidence/A11/2026-10-16-wazuh-run-1.md) (WZ-05 to repeat). Runs are listed in the [evidence register](../../evidence/A11/README.md).
 
 Wazuh has three services: an indexer (search engine for the logs), a manager (receives and analyses events) and a dashboard. A feasibility trial on 2026-10-16 showed that the official single-node stack starts on a GitHub-hosted runner and leaves about 12 GiB of memory free; Wazuh was kept.
 
@@ -42,6 +42,6 @@ The tests use the Wazuh logtest API: a log line is sent to the manager, which an
 | WZ-02 | 8.16 | Sends the same line 8 times in one session | Events 1 to 7: rule 5710; event 8: rule 5712, level 10 |
 | WZ-03 | 8.15, 8.16 | Sends one real Keycloak `LOGIN_ERROR` line | Lagune rule 100100, level 5 |
 | WZ-04 | 8.16 | Sends 5 real Keycloak `LOGIN_ERROR` lines in one session | Events 1 to 4: rule 100100; event 5: rule 100101, level 10 |
-| WZ-05 | 8.16 | Sends a real Keycloak line that is not an event | No Lagune rule (negative control: shows rule 100100 does not match every Keycloak line) |
+| WZ-05 | 8.16 | Sends a real Keycloak line that is not an event | Line decoded as JSON, API call successful, no Lagune rule (negative control: shows rule 100100 does not match every Keycloak line) |
 
 Rule numbers 5710 and 5712 and their levels come from the Wazuh documentation page "Testing decoders and rules".

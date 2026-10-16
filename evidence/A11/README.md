@@ -1,10 +1,11 @@
 # Evidence register: A11 (logging and monitoring)
 
-Feasibility trials are records of the tool choice, not control evidence.
+Feasibility trials are records of the tool choice, not control evidence. Control test runs follow the same rules as the other registers.
 
 | Run | Date (UTC) | Commit | Type | Result | Note |
 |---|---|---|---|---|---|
-| 1 | 2026-10-16 05:07:02 | 6a524fb | Feasibility trial | All three components started | Run https://github.com/Essenam97/isms-lab-27001/actions/runs/38854084669, artifact sha256:fd2626753ff9bb50d68491d4772144f5ae87d51bcf56fe07ebbb05baa6faf6e9 |
+| Trial 1 | 2026-10-16 05:07:02 | 6a524fb | Feasibility trial | All three components started | Run https://github.com/Essenam97/isms-lab-27001/actions/runs/38854084669, artifact sha256:fd2626753ff9bb50d68491d4772144f5ae87d51bcf56fe07ebbb05baa6faf6e9 |
+| Tests 1 | 2026-10-16 05:23:25 | c5b97c2 | Control tests | 5 PASS | Used as evidence except WZ-05: [evidence file](2026-10-16-wazuh-run-1.md). WZ-05 could not tell a rejected line from a failed call; test changed |
 
 ## Trial 1: measurements
 
