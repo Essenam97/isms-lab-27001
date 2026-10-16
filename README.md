@@ -22,8 +22,8 @@ docs/
   clause-06-planning/     risk method, risk register, SoA, risk treatment plan (objectives planned)
   clause-07-support/      (planned) competence, awareness, documented information
   clause-08-operation/    (planned) records of risk assessments and treatment results (8.1 to 8.3)
-  clause-09-evaluation/   (planned) internal audit, management review
-  clause-10-improvement/  (planned) nonconformities, corrective actions
+  clause-09-evaluation/   internal audit programme and report IA-2026-01 (management review planned)
+  clause-10-improvement/  nonconformity and corrective action log
   policies/               topic-specific policies POL-01 to POL-09 (drafts)
 lab/                      lab files; four tools tested by GitHub Actions
 evidence/                 one register per action and dated test reports from real runs
@@ -49,8 +49,10 @@ The lab machine has 1.6 GiB of RAM, which is not enough to run the four tools be
 - [x] Clause 5: leadership, information security policy, roles
 - [x] Topic-specific policies POL-01 to POL-09 (drafts, awaiting CEO approval)
 - [x] Lab control tests on GitHub Actions (Keycloak, Gitea, Nextcloud, Wazuh)
-- [ ] Clause 9: internal audit report and management review minutes
-- [ ] Clause 10: nonconformity and corrective action log
+- [x] Clause 9.2: internal audit IA-2026-01 (gap assessment: 6 nonconformities, 7 observations, 4 opportunities for improvement)
+- [ ] Clause 9.1 monitoring and 9.3 management review
+- [x] Clause 10.2: nonconformity log opened (6 open)
+- [ ] Corrective actions NC-01 to NC-06
 
 ## Copyright note
 
