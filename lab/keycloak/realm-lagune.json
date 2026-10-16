@@ -1,0 +1,69 @@
+{
+  "realm": "lagune",
+  "displayName": "Lagune Payroll (fictional)",
+  "enabled": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "registrationAllowed": false,
+  "resetPasswordAllowed": true,
+  "passwordPolicy": "length(12) and notUsername and notEmail and passwordHistory(5) and upperCase(1) and digits(1)",
+  "bruteForceProtected": true,
+  "failureFactor": 5,
+  "waitIncrementSeconds": 60,
+  "maxFailureWaitSeconds": 900,
+  "permanentLockout": false,
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyDigits": 6,
+  "otpPolicyPeriod": 30,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "eventsEnabled": true,
+  "eventsExpiration": 7776000,
+  "adminEventsEnabled": true,
+  "adminEventsDetailsEnabled": true,
+  "requiredActions": [
+    {
+      "alias": "CONFIGURE_TOTP",
+      "name": "Configure OTP",
+      "providerId": "CONFIGURE_TOTP",
+      "enabled": true,
+      "defaultAction": true,
+      "priority": 10,
+      "config": {}
+    }
+  ],
+  "groups": [
+    { "name": "management" },
+    { "name": "development" },
+    { "name": "infrastructure" },
+    { "name": "support" },
+    { "name": "sales" },
+    { "name": "finance" },
+    { "name": "hr" }
+  ],
+  "clients": [
+    {
+      "clientId": "gitea",
+      "name": "Gitea (source code)",
+      "protocol": "openid-connect",
+      "enabled": true,
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": ["http://localhost:3000/*"],
+      "webOrigins": ["http://localhost:3000"]
+    },
+    {
+      "clientId": "nextcloud",
+      "name": "Nextcloud (files)",
+      "protocol": "openid-connect",
+      "enabled": true,
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": ["http://localhost:8081/*"],
+      "webOrigins": ["http://localhost:8081"]
+    }
+  ]
+}

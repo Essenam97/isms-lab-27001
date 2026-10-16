@@ -2,7 +2,7 @@
 
 This repository is a self-directed training project. It builds a complete information security management system (ISMS) for a fictional company, Lagune Payroll SARL, following ISO/IEC 27001:2022 and its Amendment 1 (2024).
 
-The company does not exist. All names, figures and incidents are invented. The technical part runs on a lab I host myself with open-source software, so every control can be tested without touching third-party systems.
+The company does not exist. All names, figures and incidents are invented. The technical part is designed for a lab of open-source software that I host myself, so every control can be tested without touching third-party systems.
 
 ## Why this project
 
@@ -25,18 +25,20 @@ docs/
   clause-09-evaluation/   (planned) internal audit, management review
   clause-10-improvement/  (planned) nonconformities, corrective actions
   policies/               (planned) topic-specific policies
-lab/                      (planned) Docker Compose files for the lab
+lab/                      lab design files (Keycloak done; not deployed)
 evidence/                 (planned) screenshots and exports proving controls work
 ```
 
-## Lab stack (planned)
+## Lab: design, not deployed
 
-| Component | Role in the fictional company | Related Annex A controls |
-|---|---|---|
-| Keycloak | Single sign-on and MFA for all internal tools | 5.15, 5.17, 5.18, 8.5 |
-| Nextcloud | Internal file sharing | 5.12, 5.14, 8.24 |
-| Gitea | Source code hosting | 8.4, 8.25, 8.28 |
-| Wazuh | Log collection and security monitoring | 8.15, 8.16 |
+The lab machine has 1.6 GiB of RAM, which is not enough to run the four tools below. The lab is therefore written as design files (Docker Compose, configuration exports, test plans) that can be run later on a larger machine. No test result in this repository comes from a running system unless it has a date and a screenshot in `evidence/`.
+
+| Component | Role in the fictional company | Related Annex A controls | Status |
+|---|---|---|---|
+| Keycloak | Single sign-on and MFA for all internal tools | 5.16, 5.17, 5.18, 8.5, 8.15 | Design written: [lab/keycloak](lab/keycloak/README.md) |
+| Nextcloud | Internal file sharing | 5.12, 5.14, 8.24 | Planned |
+| Gitea | Source code hosting | 8.4, 8.25, 8.28 | Planned |
+| Wazuh | Log collection and security monitoring | 8.15, 8.16 | Planned |
 
 ## Roadmap
 
@@ -46,7 +48,8 @@ evidence/                 (planned) screenshots and exports proving controls wor
 - [x] Clause 6.1.3: risk treatment plan and residual risk acceptance
 - [x] Clause 5: leadership, information security policy, roles
 - [ ] Topic-specific policies
-- [ ] Lab deployment and technical evidence
+- [ ] Lab design files (Keycloak done; Nextcloud, Gitea, Wazuh to do)
+- [ ] Lab deployment and technical evidence (needs a machine with more RAM)
 - [ ] Clause 9: internal audit report and management review minutes
 - [ ] Clause 10: nonconformity and corrective action log
 

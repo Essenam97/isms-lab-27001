@@ -1,0 +1,69 @@
+# Runs the Keycloak control tests KC-01 to KC-05 (action A04) on a
+# GitHub-hosted runner. The runner is destroyed after each run.
+name: Keycloak control tests (A04)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "lab/keycloak/**"
+      - ".github/workflows/keycloak-controls.yml"
+  schedule:
+    - cron: "0 6 * * 1"   # every Monday at 06:00 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: lab/keycloak
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Create a random admin password for this run only
+        run: |
+          PASS="$(openssl rand -base64 24 | tr -d '/+=')"
+          echo "::add-mask::$PASS"
+          printf 'KC_ADMIN_USER=lab-admin\nKC_ADMIN_PASSWORD=%s\n' "$PASS" > .env
+          echo "KC_ADMIN_PASSWORD=$PASS" >> "$GITHUB_ENV"
+
+      - name: Start Keycloak
+        run: docker compose up -d
+
+      - name: Wait until the lagune realm is imported
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:8080/realms/lagune/.well-known/openid-configuration > /dev/null; then
+              echo "Realm lagune is up after $((i*5)) seconds"; exit 0
+            fi
+            sleep 5
+          done
+          echo "Keycloak did not start within 5 minutes"; exit 1
+
+      - name: Run tests KC-01 to KC-05
+        env:
+          KC_URL: http://localhost:8080
+          KC_ADMIN_USER: lab-admin
+        run: bash tests/run-tests.sh
+
+      - name: Show Keycloak logs if something failed
+        if: failure()
+        run: docker compose logs --tail=200
+
+      - name: Keep the report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keycloak-test-report
+          path: lab/keycloak/test-report.md
+          if-no-files-found: warn
+
+      - name: Stop Keycloak
+        if: always()
+        run: docker compose down

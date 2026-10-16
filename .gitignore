@@ -1,0 +1,2 @@
+# Secrets for the lab: never commit them
+.env
