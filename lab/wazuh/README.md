@@ -1,6 +1,6 @@
 # Wazuh: log collection and monitoring for Lagune Payroll (action A11)
 
-Status: control tests automated; run 1 on 2026-10-16 passed, see [evidence](../../evidence/A11/2026-10-16-wazuh-run-1.md) (WZ-05 to repeat). Runs are listed in the [evidence register](../../evidence/A11/README.md).
+Status: control tests automated; run 1 on 2026-10-16 passed, see [evidence](../../evidence/A11/2026-10-16-wazuh-run-1.md); WZ-05 accepted from run 2. Runs are listed in the [evidence register](../../evidence/A11/README.md).
 
 Wazuh has three services: an indexer (search engine for the logs), a manager (receives and analyses events) and a dashboard. A feasibility trial on 2026-10-16 showed that the official single-node stack starts on a GitHub-hosted runner and leaves about 12 GiB of memory free; Wazuh was kept.
 

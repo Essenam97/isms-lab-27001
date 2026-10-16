@@ -6,6 +6,7 @@ Feasibility trials are records of the tool choice, not control evidence. Control
 |---|---|---|---|---|---|
 | Trial 1 | 2026-10-16 05:07:02 | 6a524fb | Feasibility trial | All three components started | Run https://github.com/Essenam97/isms-lab-27001/actions/runs/38854084669, artifact sha256:fd2626753ff9bb50d68491d4772144f5ae87d51bcf56fe07ebbb05baa6faf6e9 |
 | Tests 1 | 2026-10-16 05:23:25 | c5b97c2 | Control tests | 5 PASS | Used as evidence except WZ-05: [evidence file](2026-10-16-wazuh-run-1.md). WZ-05 could not tell a rejected line from a failed call; test changed |
+| Tests 2 | 2026-10-16 05:34:32 | d1c93b1 | Control tests | 5 PASS | Used as evidence for WZ-05 only: line length 445, API error 0, decoder json, rule none, logger org.keycloak.quarkus.runtime.KeycloakMain. Run https://github.com/Essenam97/isms-lab-27001/actions/runs/38856224154, artifact sha256:ee6c7e005ef3f5ae009e794e0b76d0c80e618fec9246aa1ea35358c7c60793be |
 
 ## Trial 1: measurements
 
