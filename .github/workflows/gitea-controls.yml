@@ -1,0 +1,71 @@
+# Runs the Gitea control tests GT-01 to GT-06 (action A10) on a
+# GitHub-hosted runner. The runner is destroyed after each run.
+name: Gitea control tests (A10)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "lab/gitea/**"
+      - ".github/workflows/gitea-controls.yml"
+  schedule:
+    - cron: "30 6 * * 1"   # every Monday at 06:30 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: lab/gitea
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v5
+
+      - name: Start Gitea
+        run: docker compose up -d
+
+      - name: Wait until Gitea answers
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:3000/api/healthz > /dev/null; then
+              echo "Gitea is up after $((i*5)) seconds"; exit 0
+            fi
+            sleep 5
+          done
+          echo "Gitea did not start within 5 minutes"; exit 1
+
+      - name: Create the admin account with a random password for this run only
+        run: |
+          PASS="$(openssl rand -base64 24 | tr -d '/+=')Aa1"
+          echo "::add-mask::$PASS"
+          docker exec -u git lagune-gitea gitea admin user create --admin \
+            --username lab-admin --password "$PASS" \
+            --email lab-admin@lagune.example --must-change-password=false
+          echo "GT_ADMIN_PASSWORD=$PASS" >> "$GITHUB_ENV"
+
+      - name: Run tests GT-01 to GT-06
+        env:
+          GT_URL: http://localhost:3000
+          GT_ADMIN_USER: lab-admin
+        run: bash tests/run-tests.sh
+
+      - name: Show Gitea logs if something failed
+        if: failure()
+        run: docker compose logs --tail=200
+
+      - name: Keep the report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: gitea-test-report
+          path: lab/gitea/test-report.md
+          if-no-files-found: warn
+
+      - name: Stop Gitea
+        if: always()
+        run: docker compose down

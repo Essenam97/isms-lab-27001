@@ -1,0 +1,22 @@
+# Gitea for the Lagune Payroll ISMS lab (action A10).
+# SQLite database and no SSH, to keep the lab small. Not a production setup:
+# production would use HTTPS, an external database and backups.
+
+services:
+  gitea:
+    image: gitea/gitea:1.23
+    container_name: lagune-gitea
+    environment:
+      GITEA__security__INSTALL_LOCK: "true"
+      GITEA__security__MIN_PASSWORD_LENGTH: "12"
+      GITEA__security__PASSWORD_COMPLEXITY: "lower,upper,digit"
+      GITEA__database__DB_TYPE: sqlite3
+      GITEA__server__ROOT_URL: http://localhost:3000/
+      GITEA__server__DISABLE_SSH: "true"
+      GITEA__service__DISABLE_REGISTRATION: "true"
+      GITEA__service__REQUIRE_SIGNIN_VIEW: "true"
+      GITEA__repository__DEFAULT_PRIVATE: private
+    ports:
+      - "3000:3000"
+    mem_limit: 512m
+    restart: unless-stopped
