@@ -25,7 +25,7 @@ docs/
   clause-09-evaluation/   (planned) internal audit, management review
   clause-10-improvement/  (planned) nonconformities, corrective actions
   policies/               (planned) topic-specific policies
-lab/                      lab files; Keycloak and Gitea tested by GitHub Actions
+lab/                      lab files; Keycloak, Gitea and Nextcloud tested by GitHub Actions
 evidence/                 one register per action and dated test reports from real runs
 ```
 
@@ -36,7 +36,7 @@ The lab machine has 1.6 GiB of RAM, which is not enough to run the four tools be
 | Component | Role in the fictional company | Related Annex A controls | Status |
 |---|---|---|---|
 | Keycloak | Single sign-on and MFA for all internal tools | 5.16, 5.17, 5.18, 8.5, 8.15 | Tested in the lab on 2026-10-16 by GitHub Actions: [lab/keycloak](lab/keycloak/README.md), [evidence](evidence/A04/2026-10-16-keycloak-run-2.md) |
-| Nextcloud | Internal file sharing | 5.14, 5.17, 8.3, 8.24 | Tests automated, not yet run: [lab/nextcloud](lab/nextcloud/README.md) |
+| Nextcloud | Internal file sharing | 5.14, 5.17, 8.3, 8.24 | Tested in the lab on 2026-10-16 by GitHub Actions (NC-01 to repeat): [lab/nextcloud](lab/nextcloud/README.md), [evidence](evidence/A13/2026-10-16-nextcloud-run-1.md) |
 | Gitea | Source code hosting | 5.3, 8.4, 8.25, 8.28, 8.32 | Tested in the lab on 2026-10-16 by GitHub Actions: [lab/gitea](lab/gitea/README.md), [evidence](evidence/A10/2026-10-16-gitea-run-1.md) |
 | Wazuh | Log collection and security monitoring | 8.15, 8.16 | Planned |
 
@@ -48,7 +48,7 @@ The lab machine has 1.6 GiB of RAM, which is not enough to run the four tools be
 - [x] Clause 6.1.3: risk treatment plan and residual risk acceptance
 - [x] Clause 5: leadership, information security policy, roles
 - [ ] Topic-specific policies
-- [ ] Lab control tests on GitHub Actions (Keycloak and Gitea done; Nextcloud, Wazuh to do)
+- [ ] Lab control tests on GitHub Actions (Keycloak, Gitea and Nextcloud done; Wazuh to do)
 - [ ] Clause 9: internal audit report and management review minutes
 - [ ] Clause 10: nonconformity and corrective action log
 

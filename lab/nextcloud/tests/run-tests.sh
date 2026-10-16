@@ -60,11 +60,14 @@ CODE=$(curl -s -o /dev/null -w '%{http_code}' -u "user1:$PW" -T /tmp/report.txt 
 [ "$CODE" = "201" ] || [ "$CODE" = "204" ] || setup_fail "upload report.txt as user1" "HTTP $CODE"
 
 # ---- NC-01 Password policy (5.17)
-ocs "$NC_ADMIN_USER" "$NC_ADMIN_PASSWORD" POST /cloud/users -d userid=weak1 -d 'password=Lagune2026'; C=$CODE
-MSG=$(jq -r '.ocs.meta.message // empty' /tmp/body 2>/dev/null | head -c 80)
-ocs "$NC_ADMIN_USER" "$NC_ADMIN_PASSWORD" GET /cloud/users/weak1; EXISTS=$CODE
-[ "$C" != "200" ] && [ "$EXISTS" = "404" ]
-result NC-01 5.17 "User with a 10-character password not created" "create HTTP $C ${MSG}; lookup HTTP $EXISTS" $?
+# Since run 2: JSON output (run 1 got XML, so the message was empty) and a
+# positive control, so that the refusal can be attributed to the password.
+ocs "$NC_ADMIN_USER" "$NC_ADMIN_PASSWORD" POST "/cloud/users?format=json" -d userid=strong1 -d "password=$PW"; CP=$CODE
+ocs "$NC_ADMIN_USER" "$NC_ADMIN_PASSWORD" POST "/cloud/users?format=json" -d userid=weak1 -d 'password=Lagune2026'; C=$CODE
+MSG=$(jq -r '.ocs.meta.message // empty' /tmp/body 2>/dev/null | head -c 100)
+ocs "$NC_ADMIN_USER" "$NC_ADMIN_PASSWORD" GET "/cloud/users/weak1?format=json"; EXISTS=$CODE
+[ "$CP" = "200" ] && [ "$C" != "200" ] && [ "$EXISTS" = "404" ]
+result NC-01 5.17 "Same request with a 16-character password works; with a 10-character password the user is not created" "valid password HTTP $CP; short password HTTP $C ${MSG}; lookup HTTP $EXISTS" $?
 
 # ---- NC-02 Public link without password is refused (5.14)
 ocs user1 "$PW" POST "/apps/files_sharing/api/v1/shares?format=json" -d path=/report.txt -d shareType=3; C=$CODE

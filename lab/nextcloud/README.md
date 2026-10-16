@@ -1,6 +1,6 @@
 # Nextcloud: file sharing and storage for Lagune Payroll (actions A07, A13)
 
-Status: tests automated, not yet run. The tests run on a GitHub-hosted runner through the workflow [nextcloud-controls.yml](../../.github/workflows/nextcloud-controls.yml). Runs and their status are listed in the [evidence register](../../evidence/A13/README.md).
+Status: tests automated. The tests run on a GitHub-hosted runner through the workflow [nextcloud-controls.yml](../../.github/workflows/nextcloud-controls.yml). Runs are listed in the [evidence register](../../evidence/A13/README.md); run 1 on 2026-10-16 passed, see [evidence](../../evidence/A13/2026-10-16-nextcloud-run-1.md).
 
 ## What this covers
 
@@ -32,7 +32,7 @@ Status: tests automated, not yet run. The tests run on a GitHub-hosted runner th
 
 | Test | Control | What the script does | Expected result |
 |---|---|---|---|
-| NC-01 | 5.17 | Admin creates a user with the password `Lagune2026` (10 characters) | User not created |
+| NC-01 | 5.17 | Admin creates one user with a 16-character password, then another with `Lagune2026` (10 characters) | First user created (positive control); second not created, with the error message shown |
 | NC-02 | 5.14 | `user1` creates a public link to a file without a password | Refused; no share exists on the file |
 | NC-03 | 5.14 | `user1` creates a public link with a password | Created, with an expiry date no later than 7 days from today |
 | NC-04 | 8.24 | Reads the stored file directly from the server's disk, then downloads it as `user1` | On disk: starts with `HBEGIN`, no plaintext. Download: plaintext (positive control) |
