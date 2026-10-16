@@ -1,0 +1,6 @@
+# Compose override: same Keycloak as lab/keycloak, with console logs in JSON
+# so that Wazuh can decode them. Used only by the Wazuh control tests.
+services:
+  keycloak:
+    environment:
+      KC_LOG_CONSOLE_OUTPUT: json

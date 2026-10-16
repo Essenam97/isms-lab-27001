@@ -7,7 +7,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "lab/wazuh/**"
+      - "lab/wazuh/trial.sh"
       - ".github/workflows/wazuh-trial.yml"
 
 permissions:

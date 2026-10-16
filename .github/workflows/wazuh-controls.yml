@@ -1,0 +1,61 @@
+# Runs the Wazuh control tests WZ-01 to WZ-05 (action A11) on a GitHub-hosted
+# runner, with Keycloak beside Wazuh to produce real log lines.
+name: Wazuh control tests (A11)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "lab/wazuh/rules/**"
+      - "lab/wazuh/tests/**"
+      - "lab/wazuh/start-wazuh.sh"
+      - "lab/wazuh/keycloak-json-logs.yml"
+      - ".github/workflows/wazuh-controls.yml"
+  schedule:
+    - cron: "30 7 * * 1"   # every Monday at 07:30 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v5
+
+      - name: Start Wazuh and load the Lagune rules
+        working-directory: lab/wazuh
+        run: bash start-wazuh.sh
+
+      - name: Start Keycloak with JSON logs
+        run: |
+          PASS="$(openssl rand -base64 24 | tr -d '/+=')"
+          echo "::add-mask::$PASS"
+          printf 'KC_ADMIN_USER=lab-admin\nKC_ADMIN_PASSWORD=%s\n' "$PASS" > lab/keycloak/.env
+          docker compose -f lab/keycloak/docker-compose.yml -f lab/wazuh/keycloak-json-logs.yml up -d
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:8080/realms/lagune/.well-known/openid-configuration > /dev/null && { echo "Keycloak up after $((i*5)) s"; exit 0; }
+            sleep 5
+          done
+          echo "Keycloak did not start"; exit 1
+
+      - name: Run tests WZ-01 to WZ-05
+        working-directory: lab/wazuh
+        run: bash tests/run-tests.sh
+
+      - name: Show logs if something failed
+        if: failure()
+        run: |
+          docker logs lagune-keycloak --tail=40 2>&1 || true
+          docker logs single-node-wazuh.manager-1 --tail=80 2>&1 || true
+
+      - name: Keep the report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: wazuh-test-report
+          path: lab/wazuh/test-report.md
+          if-no-files-found: warn

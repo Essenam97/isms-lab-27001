@@ -1,0 +1,24 @@
+<!--
+  Lagune Payroll custom rules (action A11, risk R07).
+  Input: Keycloak console logs in JSON (option log-console-output=json),
+  decoded by the built-in Wazuh JSON decoder.
+  Limit: the rules do not extract the user name, so rule 100101 counts
+  failed logins for all users together, not per user.
+-->
+<group name="lagune,keycloak,">
+
+  <rule id="100100" level="5">
+    <decoded_as>json</decoded_as>
+    <field name="loggerName">^org.keycloak.events$</field>
+    <field name="message">type="LOGIN_ERROR"|type=LOGIN_ERROR</field>
+    <description>Keycloak: failed login</description>
+    <group>authentication_failed,</group>
+  </rule>
+
+  <rule id="100101" level="10" frequency="5" timeframe="120">
+    <if_matched_sid>100100</if_matched_sid>
+    <description>Keycloak: 5 failed logins within 2 minutes (possible password guessing)</description>
+    <group>authentication_failures,</group>
+  </rule>
+
+</group>
