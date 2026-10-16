@@ -5,7 +5,7 @@
 | Owner | Head of Infrastructure |
 | Approver | CEO |
 | Classification | Internal |
-| Version | 1.1 |
+| Version | 1.2 |
 | Applies to | All staff, interns and contractors; all systems in the ISMS scope |
 | SoA controls | 5.15, 5.16, 5.17, 5.18, 6.5, 8.2, 8.3, 8.5, 8.15 |
 | Risks | R02, R03, R07, R12 |
@@ -26,6 +26,7 @@ This policy sets who may access Lagune Payroll's information and systems, how th
 | Rule | Requirement |
 |---|---|
 | Single sign-on | All internal tools (Nextcloud, Gitea, monitoring) are accessed through Keycloak. A tool that cannot use Keycloak needs an exception (section 9) |
+| Password-only API logins | No client of the staff realm accepts a login by password alone through the API (OAuth direct grant). Automated access uses service accounts with their own credentials |
 | Password | At least 12 characters, with at least one upper-case letter and one digit; must not contain the user name or email address; must differ from the last 5 passwords |
 | Multi-factor authentication | Required for every staff account, set up at first login with an authenticator app. It cannot be removed from an account except through an approved exception |
 | Customer administrator accounts in Lagune Pay | Multi-factor authentication required (action A03) |
@@ -79,5 +80,6 @@ At least once a year, and after any major change to the identity system.
 | 0.1 | 2026-10 | ISMS manager | First draft, written ahead of the dates in the risk treatment plan |
 | 1.0 | 2026-10-16 | CEO | Approved at the ISMS kick-off meeting |
 | 1.1 | 2026-10-16 | CEO | Section 8.1: retention of Keycloak events raised from 90 to 400 days (NC-01 of audit IA-2026-01); approved by signed message |
+| 1.2 | 2026-10-16 | CEO | Section 3: no password-only API logins, after lab run #5 showed that the direct grant cannot enforce MFA cleanly; approved by signed message |
 
-Status: approved, version 1.1, by signed message of the CEO on 2026-10-16. See the [approval register](../clause-07-support/7.5-documented-information.md).
+Status: approved, version 1.2, by signed message of the CEO on 2026-10-16. See the [approval register](../clause-07-support/7.5-documented-information.md).

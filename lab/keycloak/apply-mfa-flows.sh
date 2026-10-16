@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Makes the one-time code required at every login in the lagune realm (OBS-01).
+# Makes the one-time code required at every login in the lagune realm (OBS-01),
+# and turns off password-only API logins (direct grant) for every client.
 # Copies the built-in "browser" and "direct grant" flows, changes their
 # conditional OTP subflow to REQUIRED (other conditional subflows are not
 # touched), and binds the copies to the realm.
@@ -41,3 +42,17 @@ force_otp "direct grant" "lagune direct grant"
 api PUT "" '{"browserFlow":"lagune browser","directGrantFlow":"lagune direct grant"}'
 [ "$CODE" = "204" ] || { echo "Binding the flows failed: HTTP $CODE"; cat /tmp/body; exit 1; }
 echo "Flows bound to realm $REALM"
+
+# Since run 6: no client of the realm accepts the direct grant.
+# Run 5 showed that a REQUIRED OTP step in the direct grant flow makes Keycloak
+# fail with HTTP 500 (AuthenticationFlowException, direct-grant-validate-otp)
+# for a user who has not set up OTP, because that flow cannot ask the user to
+# set it up. Staff log in through the browser flow only (POL-01 section 3).
+api GET "/clients"
+jq -c '.[] | select(.directAccessGrantsEnabled==true)' /tmp/body > /tmp/dg.jsonl
+while IFS= read -r c; do
+  cid=$(echo "$c" | jq -r .id); name=$(echo "$c" | jq -r .clientId)
+  api PUT "/clients/$cid" "$(echo "$c" | jq -c '.directAccessGrantsEnabled=false')"
+  [ "$CODE" = "204" ] || { echo "Could not turn off direct grant for $name: HTTP $CODE"; cat /tmp/body; exit 1; }
+  echo "Direct grant turned off for client $name"
+done < /tmp/dg.jsonl
