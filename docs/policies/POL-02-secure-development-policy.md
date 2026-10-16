@@ -5,7 +5,7 @@
 | Owner | Head of Development |
 | Approver | CEO |
 | Classification | Internal |
-| Version | 0.1 (draft) |
+| Version | 1.0 |
 | Applies to | Everyone who writes, reviews or deploys code for Lagune Pay and its supporting tools |
 | SoA controls | 5.3, 5.8, 8.4, 8.8, 8.25, 8.26, 8.28, 8.29, 8.31, 8.32, 8.33 |
 | Risks | R02, R09 |
@@ -67,5 +67,6 @@ At least once a year, and after a security incident caused by a change.
 | Version | Date | Author | Change |
 |---|---|---|---|
 | 0.1 | 2026-10 | ISMS manager | First draft, written ahead of the dates in the risk treatment plan |
+| 1.0 | 2026-10-16 | CEO | Approved at the ISMS kick-off meeting |
 
-Status: draft, to be approved by the CEO.
+Status: approved, version 1.0, at the ISMS kick-off meeting on 2026-10-16. See the [approval register](../clause-07-support/7.5-documented-information.md).

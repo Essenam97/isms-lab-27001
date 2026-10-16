@@ -5,7 +5,7 @@
 | Owner | Head of Infrastructure |
 | Approver | CEO |
 | Classification | Internal |
-| Version | 0.1 (draft) |
+| Version | 1.0 |
 | Applies to | All staff, interns and contractors; all systems in the ISMS scope |
 | SoA controls | 5.15, 5.16, 5.17, 5.18, 6.5, 8.2, 8.3, 8.5, 8.15 |
 | Risks | R02, R03, R07, R12 |
@@ -77,5 +77,6 @@ At least once a year, and after any major change to the identity system.
 | Version | Date | Author | Change |
 |---|---|---|---|
 | 0.1 | 2026-10 | ISMS manager | First draft, written ahead of the dates in the risk treatment plan |
+| 1.0 | 2026-10-16 | CEO | Approved at the ISMS kick-off meeting |
 
-Status: draft, to be approved by the CEO.
+Status: approved, version 1.0, at the ISMS kick-off meeting on 2026-10-16. See the [approval register](../clause-07-support/7.5-documented-information.md).

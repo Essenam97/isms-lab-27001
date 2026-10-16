@@ -18,11 +18,11 @@ Lagune Payroll SARL is a 42-person software company in Lomé, Togo. It sells a w
 docs/
   00-company-profile.md
   clause-04-context/      4.1 issues, 4.2 interested parties, 4.3 scope
-  clause-05-leadership/   leadership, information security policy, roles
-  clause-06-planning/     risk method, risk register, SoA, risk treatment plan (objectives planned)
-  clause-07-support/      (planned) competence, awareness, documented information
+  clause-05-leadership/   leadership, information security policy, roles, kick-off minutes
+  clause-06-planning/     risk method, risk register, SoA, risk treatment plan, objectives
+  clause-07-support/      competence, documented information and approval register
   clause-08-operation/    (planned) records of risk assessments and treatment results (8.1 to 8.3)
-  clause-09-evaluation/   internal audit programme and report IA-2026-01 (management review planned)
+  clause-09-evaluation/   monitoring plan, internal audit programme and report IA-2026-01
   clause-10-improvement/  nonconformity and corrective action log
   policies/               topic-specific policies POL-01 to POL-09 (drafts)
 lab/                      lab files; four tools tested by GitHub Actions
@@ -47,12 +47,17 @@ The lab machine has 1.6 GiB of RAM, which is not enough to run the four tools be
 - [x] Statement of Applicability (93 controls)
 - [x] Clause 6.1.3: risk treatment plan and residual risk acceptance
 - [x] Clause 5: leadership, information security policy, roles
-- [x] Topic-specific policies POL-01 to POL-09 (drafts, awaiting CEO approval)
+- [x] Topic-specific policies POL-01 to POL-09
+- [x] ISMS kick-off meeting on 2026-10-16: 23 documents approved as version 1.0
+- [x] Clause 6.2: information security objectives OBJ-01 to OBJ-06
+- [x] Clause 7.2 competence and 7.5 documented information
+- [ ] Clause 7.3 awareness records and 7.4 communication
 - [x] Lab control tests on GitHub Actions (Keycloak, Gitea, Nextcloud, Wazuh)
 - [x] Clause 9.2: internal audit IA-2026-01 (gap assessment: 6 nonconformities, 7 observations, 4 opportunities for improvement)
-- [ ] Clause 9.1 monitoring and 9.3 management review
-- [x] Clause 10.2: nonconformity log opened (6 open)
-- [ ] Corrective actions NC-01 to NC-06
+- [x] Clause 9.1: monitoring and measurement plan
+- [ ] Clause 9.3: first management review (set for 2027-01-20)
+- [x] Clause 10.2: nonconformity log
+- [ ] Corrective actions: NC-02, NC-03, NC-06 closed; NC-04, NC-05 awaiting their effectiveness check; NC-01 open
 
 ## Copyright note
 

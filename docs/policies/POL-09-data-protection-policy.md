@@ -5,7 +5,7 @@
 | Owner | CEO |
 | Approver | CEO |
 | Classification | Internal |
-| Version | 0.1 (draft) |
+| Version | 1.0 |
 | Applies to | All personal data processed by Lagune Payroll, about customers' employees, its own staff and its contacts |
 | SoA controls | 5.31, 5.33, 5.34, 8.10, 8.11 |
 | Risks | R03, R06 |
@@ -68,5 +68,6 @@ At least once a year, and after any incident or change that shows it no longer f
 | Version | Date | Author | Change |
 |---|---|---|---|
 | 0.1 | 2026-10 | ISMS manager | First draft, written ahead of the dates in the risk treatment plan |
+| 1.0 | 2026-10-16 | CEO | Approved at the ISMS kick-off meeting |
 
-Status: draft, to be approved by the CEO.
+Status: approved, version 1.0, at the ISMS kick-off meeting on 2026-10-16. See the [approval register](../clause-07-support/7.5-documented-information.md).
