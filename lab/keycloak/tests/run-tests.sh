@@ -49,11 +49,11 @@ api () { # method path [json]; prints body, sets CODE
   cat /tmp/body
 }
 
-user_login () { # username password; prints body, sets CODE
+user_login () { # username password; writes body to /tmp/login, sets CODE
+  # Not called inside $(...): a subshell would lose CODE (bug found in run 1).
   CODE=$(curl -s -o /tmp/login -w '%{http_code}' -d grant_type=password -d client_id=admin-cli \
     --data-urlencode "username=$1" --data-urlencode "password=$2" \
     "$KC_URL/realms/$REALM/protocol/openid-connect/token")
-  cat /tmp/login
 }
 
 create_user () { # username; prints id
@@ -84,10 +84,10 @@ MSG=$(jq -r '.error // .errorMessage // empty' /tmp/body)
 # KC-02 MFA required for a new user (8.5)
 set_password "$U1" "$GOOD_PASS"
 RA=$(api GET "/users/$U1" | jq -c '.requiredActions')
-LOGIN=$(user_login kc-test-1 "$GOOD_PASS"); C2=$CODE
-DESC=$(echo "$LOGIN" | jq -r '.error_description // empty')
-echo "$RA" | grep -q CONFIGURE_TOTP && [ "$C2" != "200" ]
-result KC-02 8.5 "New user has CONFIGURE_TOTP and cannot get a token before setting up MFA" "requiredActions=$RA; login HTTP $C2 ${DESC}" $?
+user_login kc-test-1 "$GOOD_PASS"; C2=$CODE
+DESC=$(jq -r '.error_description // empty' /tmp/login)
+echo "$RA" | grep -q CONFIGURE_TOTP && [ "$C2" = "400" ]
+result KC-02 8.5 "New user has CONFIGURE_TOTP; token request refused (HTTP 400) before MFA is set up" "requiredActions=$RA; login HTTP $C2 ${DESC}" $?
 
 # KC-03 Brute force protection and login error events (8.5, 8.15)
 U2=$(create_user kc-test-2)
@@ -104,9 +104,9 @@ set_password "$U3" "$GOOD_PASS"
 update_user "$U3" '.requiredActions = []'
 user_login kc-test-3 "$GOOD_PASS" > /dev/null; BEFORE=$CODE
 update_user "$U3" '.enabled = false'
-AFTER_BODY=$(user_login kc-test-3 "$GOOD_PASS"); AFTER=$CODE
-[ "$BEFORE" = "200" ] && [ "$AFTER" != "200" ]
-result KC-04 "5.18, 6.5" "Login works before, refused after disabling" "before HTTP $BEFORE; after HTTP $AFTER $(echo "$AFTER_BODY" | jq -r '.error_description // empty')" $?
+user_login kc-test-3 "$GOOD_PASS"; AFTER=$CODE
+[ "$BEFORE" = "200" ] && [ "$AFTER" = "400" ]
+result KC-04 "5.18, 6.5" "Login HTTP 200 before, HTTP 400 after disabling" "before HTTP $BEFORE; after HTTP $AFTER $(jq -r '.error_description // empty' /tmp/login)" $?
 
 # KC-05 Admin events for group changes (8.15)
 GID=$(api GET "/groups?search=infrastructure" | jq -r '.[] | select(.name=="infrastructure") | .id')

@@ -24,7 +24,7 @@ jobs:
         working-directory: lab/keycloak
     steps:
       - name: Check out the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Create a random admin password for this run only
         run: |
@@ -58,7 +58,7 @@ jobs:
 
       - name: Keep the report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: keycloak-test-report
           path: lab/keycloak/test-report.md
