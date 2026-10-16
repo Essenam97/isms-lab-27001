@@ -19,7 +19,7 @@ docs/
   00-company-profile.md
   clause-04-context/      4.1 issues, 4.2 interested parties, 4.3 scope
   clause-05-leadership/   (planned) policy, roles
-  clause-06-planning/     (planned) risk method, risk register, SoA, objectives
+  clause-06-planning/     risk method and risk register (SoA and objectives planned)
   clause-07-support/      (planned) competence, awareness, documented information
   clause-08-operation/    (planned) risk treatment plan
   clause-09-evaluation/   (planned) internal audit, management review
@@ -41,7 +41,7 @@ evidence/                 (planned) screenshots and exports proving controls wor
 ## Roadmap
 
 - [x] Clause 4: context, interested parties, scope
-- [ ] Clause 6.1: risk assessment method and risk register
+- [x] Clause 6.1.2: risk assessment method and risk register
 - [ ] Statement of Applicability (93 controls)
 - [ ] Clause 5: information security policy, roles
 - [ ] Topic-specific policies
